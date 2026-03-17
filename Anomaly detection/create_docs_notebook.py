@@ -1,0 +1,144 @@
+
+import json
+import os
+
+notebook_content = {
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Identity Anomaly Detection System - Documentation\n",
+    "\n",
+    "## 1. System Architecture\n",
+    "\n",
+    "The system follows a modern **Microservices Architecture** with a decoupled frontend and backend, powered by an ensemble ML engine.\n",
+    "\n",
+    "### High-Level Data Flow:\n",
+    "1.  **User/System** generates authentication logs.\n",
+    "2.  **FastAPI Backend** ingests logs and preprocesses them via the Data Pipeline.\n",
+    "3.  **ML Engine** (Ensemble) predicts risk scores using two distinct models.\n",
+    "4.  **React Dashboard** visualizes real-time risks and alerts security analysts.\n",
+    "\n",
+    "### Architecture Diagram (Mermaid):\n",
+    "\n",
+    "```mermaid\n",
+    "graph TD\n",
+    "    User[User / Auth System] -->|Logs| API[FastAPI Backend]\n",
+    "    API -->|Raw Data| PL[Data Pipeline]\n",
+    "    PL -->|Features| ML[Ensemble ML Engine]\n",
+    "    \n",
+    "    subgraph \"ML Engine\"\n",
+    "    ML --> IF[Isolation Forest]\n",
+    "    ML --> AE[Autoencoder]\n",
+    "    IF --> Vote[Voting Logic]\n",
+    "    AE --> Vote\n",
+    "    end\n",
+    "    \n",
+    "    Vote -->|Risk Score| DB[(Database / CSV)]\n",
+    "    DB -->|History| API\n",
+    "    API -->|JSON| UI[React Dashboard]\n",
+    "    UI -->|Alerts| Analyst[Security Analyst]\n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2. Model Selection Rationale\n",
+    "\n",
+    "We utilize an **Ensemble Approach** combining statistical and deep learning models. This ensures robustness against known patterns while maintaining the ability to detect novel, unseen attacks.\n",
+    "\n",
+    "### A. Isolation Forest (Statistical Model)\n",
+    "**Why?**\n",
+    "- **Efficient**: Works extremely well on high-dimensional datasets.\n",
+    "- **Unsupervised**: Does not require labeled attack data (which is rare/expensive).\n",
+    "- **Concept**: It isolates anomalies by randomly partitioning data. Anomalies require fewer splits to be isolated than normal points.\n",
+    "- **Best For**: Detecting outliers that are distinctly different from the norm (e.g., Impossible Travel).\n",
+    "\n",
+    "### B. Autoencoder (Deep Learning Model)\n",
+    "**Why?**\n",
+    "- **Complex Patterns**: Capable of learning non-linear relationships in authentication behavior.\n",
+    "- **Reconstruction Error**: The model is trained to compress and reconstruct *normal* data. When it sees an attack, it fails to reconstruct it accurately, resulting in a high error (Risk Score).\n",
+    "- **Best For**: Subtle anomalies like Credential Stuffing or slow Lateral Movement.\n",
+    "\n",
+    "### C. Ensemble Voting Strategy\n",
+    "**Why?**\n",
+    "- **Reduced False Positives**: By requiring consensus or weighted agreement between models, we reduce false alarms.\n",
+    "- **Holistic Coverage**: IF catches clear statistical outliers; AE catches subtle behavioral shifts."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 3. Deployment Guide\n",
+    "\n",
+    "This guide covers how to set up and run the full stack locally.\n",
+    "\n",
+    "### Prerequisites\n",
+    "- **Python 3.8+** (for Backend)\n",
+    "- **Node.js 16+** & **npm** (for Frontend)\n",
+    "\n",
+    "### Step 1: Backend Setup (FastAPI)\n",
+    "Navigate to the backend directory and install dependencies:\n",
+    "\n",
+    "```bash\n",
+    "cd backend\n",
+    "pip install -r requirements.txt\n",
+    "```\n",
+    "\n",
+    "Start the server:\n",
+    "```bash\n",
+    "uvicorn backend.main:app --reload --port 8000\n",
+    "```\n",
+    "*Server will start at `http://localhost:8000`*\n",
+    "\n",
+    "### Step 2: Frontend Setup (React)\n",
+    "Navigate to the frontend directory:\n",
+    "\n",
+    "```bash\n",
+    "cd frontend\n",
+    "npm install\n",
+    "```\n",
+    "\n",
+    "Start the development server:\n",
+    "```bash\n",
+    "npm run dev\n",
+    "```\n",
+    "*UI will be accessible at `http://localhost:5173`*\n",
+    "\n",
+    "### Step 3: Verification\n",
+    "- Open the Dashboard at `http://localhost:5173`.\n",
+    "- Check Backend Health: `http://localhost:8000/api/health`."
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
+
+with open('Documentation.ipynb', 'w') as f:
+    json.dump(notebook_content, f, indent=1)
+
+print("Documentation Notebook created successfully.")

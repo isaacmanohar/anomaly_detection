@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /s \"C:\\\\Users\\\\sherw\\\\Downloads\\\\Anomaly detection\\\\Anomaly detection\")",
+      "Bash(python:*)",
+      "WebSearch",
+      "WebFetch(domain:www.reactbits.dev)",
+      "WebFetch(domain:reactbits.dev)",
+      "WebFetch(domain:github.com)",
+      "Bash(tree:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(pip install:*)",
+      "Bash(curl:*)",
+      "Bash(npm search:*)",
+      "Bash(pip show:*)",
+      "Bash(pip uninstall:*)",
+      "Bash(npm ls:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(npx vite:*)",
+      "Bash(powershell \"Stop-Process -Id 7584 -Force\")",
+      "Bash(powershell:*)"
+    ]
+  }
+}
